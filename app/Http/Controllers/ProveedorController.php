@@ -71,10 +71,10 @@ class ProveedorController extends Controller
         return redirect()->route('proveedores.index')->with('success', 'Proveedor eliminado correctamente.');
     }
 
-    public function trash()
+    public function trashed()
     {
         $proveedores = Proveedor::onlyTrashed()->get();
-        return view('proveedores.trash', compact('proveedores'));
+        return view('proveedores.trashed', compact('proveedores'));
     }
 
     public function restore($nit)
@@ -86,6 +86,6 @@ class ProveedorController extends Controller
     public function forceDelete($nit)
     {
         Proveedor::withTrashed()->where('nit', $nit)->forceDelete();
-        return redirect()->route('proveedores.trash')->with('success', 'Proveedor eliminado definitivamente.');
+        return redirect()->route('proveedores.trashed')->with('success', 'Proveedor eliminado definitivamente.');
     }
 }

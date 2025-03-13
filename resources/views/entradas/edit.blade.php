@@ -1,125 +1,129 @@
 @extends('layouts.app')
 
+@section('title', 'Editar Entrada')
+
 @section('content')
 <div class="container">
     <div class="card">
         <div class="card-header">
             <div class="d-flex justify-content-between align-items-center">
-                <h3>Detalle de Entrada #{{ $entrada->id }}</h3>
-                <div>
-                    <a href="{{ route('entradas.edit', $entrada->id) }}" class="btn btn-warning">
-                        <i class="fa fa-edit"></i> Editar
-                    </a>
-                    <a href="{{ route('entradas.index') }}" class="btn btn-secondary">
-                        <i class="fa fa-arrow-left"></i> Volver
-                    </a>
-                </div>
+                <h3>Editar Entrada #{{ $entrada->id }}</h3>
+                <a href="{{ route('entradas.index') }}" class="btn btn-secondary">
+                    <i class="fa fa-arrow-left"></i> Volver
+                </a>
             </div>
         </div>
         <div class="card-body">
-            <div class="row">
-                <div class="col-md-6">
-                    <h4>Información de la Compra</h4>
-                    <table class="table table-striped">
-                        <tr>
-                            <th style="width: 200px;">Número de Factura:</th>
-                            <td>{{ $entrada->factura_compra }}</td>
-                        </tr>
-                        <tr>
-                            <th>Fecha de Compra:</th>
-                            <td>{{ $entrada->created_at->format('d/m/Y H:i') }}</td>
-                        </tr>
-                        <tr>
-                            <th>Proveedor:</th>
-                            <td>{{ $entrada->proveedor->nombre }}</td>
-                        </tr>
-                        <tr>
-                            <th>Producto:</th>
-                            <td>{{ $entrada->producto->nombre }}</td>
-                        </tr>
-                        <tr>
-                            <th>Cantidad:</th>
-                            <td>{{ $entrada->cantidad }}</td>
-                        </tr>
-                        <tr>
-                            <th>Precio Unitario:</th>
-                            <td>${{ number_format($entrada->precio_unitario, 2) }}</td>
-                        </tr>
-                        <tr>
-                            <th>Total:</th>
-                            <td>${{ number_format($entrada->total, 2) }}</td>
-                        </tr>
-                    </table>
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
                 </div>
-                <div class="col-md-6">
-                    <h4>Información del Proveedor</h4>
-                    <table class="table table-striped">
-                        <tr>
-                            <th style="width: 200px;">Nombre:</th>
-                            <td>{{ $entrada->proveedor->nombre }}</td>
-                        </tr>
-                        @if(isset($entrada->proveedor->ruc))
-                        <tr>
-                            <th>RUC/NIT:</th>
-                            <td>{{ $entrada->proveedor->ruc }}</td>
-                        </tr>
-                        @endif
-                        @if(isset($entrada->proveedor->direccion))
-                        <tr>
-                            <th>Dirección:</th>
-                            <td>{{ $entrada->proveedor->direccion }}</td>
-                        </tr>
-                        @endif
-                        @if(isset($entrada->proveedor->telefono))
-                        <tr>
-                            <th>Teléfono:</th>
-                            <td>{{ $entrada->proveedor->telefono }}</td>
-                        </tr>
-                        @endif
-                        @if(isset($entrada->proveedor->email))
-                        <tr>
-                            <th>Email:</th>
-                            <td>{{ $entrada->proveedor->email }}</td>
-                        </tr>
-                        @endif
-                    </table>
-                    
-                    <h4>Información del Producto</h4>
-                    <table class="table table-striped">
-                        <tr>
-                            <th style="width: 200px;">Nombre:</th>
-                            <td>{{ $entrada->producto->nombre }}</td>
-                        </tr>
-                        @if(isset($entrada->producto->codigo))
-                        <tr>
-                            <th>Código:</th>
-                            <td>{{ $entrada->producto->codigo }}</td>
-                        </tr>
-                        @endif
-                        @if(isset($entrada->producto->descripcion))
-                        <tr>
-                            <th>Descripción:</th>
-                            <td>{{ $entrada->producto->descripcion }}</td>
-                        </tr>
-                        @endif
-                        <tr>
-                            <th>Stock Actual:</th>
-                            <td>{{ $entrada->producto->stock }}</td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <div class="card-footer">
-            <form action="{{ route('entradas.destroy', $entrada->id) }}" method="POST" 
-                onsubmit="return confirm('¿Está seguro de eliminar esta entrada? Se ajustará el stock del producto.')">
+            @endif
+
+            <form action="{{ route('entradas.update', $entrada->id) }}" method="POST">
                 @csrf
-                @method('DELETE')
-                <button type="submit" class="btn btn-danger">
-                    <i class="fa fa-trash"></i> Eliminar Entrada
-                </button>
+                @method('PUT')
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label for="factura_compra">Número de Factura:</label>
+                            <input type="text" name="factura_compra" id="factura_compra" 
+                                class="form-control @error('factura_compra') is-invalid @enderror" 
+                                value="{{ old('factura_compra', $entrada->factura_compra) }}" required>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label for="id_proveedor">Proveedor:</label>
+                            <select name="id_proveedor" id="id_proveedor" 
+                                class="form-control @error('id_proveedor') is-invalid @enderror" required>
+                                <option value="">Seleccione un proveedor</option>
+                                @foreach($proveedores as $proveedor)
+                                    <option value="{{ $proveedor->nit }}" 
+                                        {{ old('id_proveedor', optional($entrada->proveedor)->nit) == $proveedor->nit ? 'selected' : '' }}>
+                                        {{ $proveedor->nombre }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label for="id_producto">Producto:</label>
+                            <select name="id_producto" id="id_producto" 
+                                class="form-control @error('id_producto') is-invalid @enderror" required>
+                                <option value="">Seleccione un producto</option>
+                                @foreach($productos as $producto)
+                                    <option value="{{ $producto->id }}" 
+                                        {{ old('id_producto', optional($entrada->producto)->id) == $producto->id ? 'selected' : '' }}>
+                                        {{ $producto->nombre }} (Stock actual: {{ $producto->stock }})
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <div class="form-group mb-3">
+                            <label for="cantidad">Cantidad:</label>
+                            <input type="number" name="cantidad" id="cantidad" 
+                                class="form-control @error('cantidad') is-invalid @enderror" 
+                                value="{{ old('cantidad', $entrada->cantidad) }}" min="1" required>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <div class="form-group mb-3">
+                            <label for="precio_unitario">Precio Unitario:</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" name="precio_unitario" id="precio_unitario" 
+                                    class="form-control @error('precio_unitario') is-invalid @enderror" 
+                                    value="{{ old('precio_unitario', $entrada->precio_unitario) }}" step="0.01" min="0" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="telefono_proveedor">Teléfono del Proveedor:</label>
+                    <input type="text" name="telefono_proveedor" id="telefono_proveedor" 
+                        class="form-control @error('telefono_proveedor') is-invalid @enderror" 
+                        value="{{ old('telefono_proveedor', optional($entrada->proveedor)->telefono) }}" 
+                        pattern="[0-9]+" title="Solo se permiten números" required>
+                </div>
+
+                <div class="form-group text-end">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa fa-save"></i> Actualizar Entrada
+                    </button>
+                </div>
             </form>
         </div>
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const cantidadInput = document.getElementById('cantidad');
+        const precioUnitarioInput = document.getElementById('precio_unitario');
+        const telefonoProveedorInput = document.getElementById('telefono_proveedor');
+
+        // Validar que solo se ingresen números en el campo de teléfono
+        telefonoProveedorInput.addEventListener('input', function() {
+            this.value = this.value.replace(/\D/g, '');
+        });
+    });
+</script>
+@endpush

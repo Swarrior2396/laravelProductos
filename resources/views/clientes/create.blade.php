@@ -21,7 +21,7 @@
 
         <div class="mb-3">
             <label for="dni" class="form-label">DNI</label>
-            <input type="text" class="form-control" id="dni" name="dni" required>
+            <input type="text" class="form-control" id="dni" name="dni" maxlength="13" required>
         </div>
 
         <div class="mb-3">
@@ -31,7 +31,7 @@
 
         <div class="mb-3">
             <label for="correo" class="form-label">Correo</label>
-            <input type="email" class="form-control" id="correo" name="correo">
+            <input type="email" class="form-control" id="correo" name="correo" required>
         </div>
 
         <div class="mb-3">
@@ -48,4 +48,22 @@
         <a href="{{ route('clientes.index') }}" class="btn btn-secondary">Cancelar</a>
     </form>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        let fechaInput = document.getElementById("fecha_registro");
+        let telefonoInput = document.getElementById("telefono");
+
+        let today = new Date().toISOString().split("T")[0]; 
+        let minDate = "2000-01-01"; 
+
+        fechaInput.value = today; 
+        fechaInput.setAttribute("min", minDate);
+        fechaInput.setAttribute("max", today);
+
+        telefonoInput.addEventListener("input", function() {
+            this.value = this.value.replace(/\D/g, ''); // Remueve todo lo que no sea número
+        });
+    });
+</script>
 @endsection

@@ -65,10 +65,10 @@ class ClienteController extends Controller
         return redirect()->route('clientes.index')->with('success', 'Cliente eliminado correctamente.');
     }
 
-    public function trash()
+    public function trashed()
     {
         $clientes = Cliente::onlyTrashed()->get();
-        return view('clientes.trash', compact('clientes'));
+        return view('clientes.trashed', compact('clientes'));
     }
 
     public function restore($dni)

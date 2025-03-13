@@ -7,6 +7,7 @@
     <h1 class="mb-4">Lista de Clientes</h1>
 
     <a href="{{ route('clientes.create') }}" class="btn btn-primary mb-3">Agregar Cliente</a>
+    <a href="{{ route('clientes.trashed') }}" class="btn btn-secondary mb-3">Clientes eliminados</a>
 
     @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>

@@ -58,10 +58,10 @@
                             <th style="width: 200px;">Nombre:</th>
                             <td>{{ $entrada->proveedor->nombre }}</td>
                         </tr>
-                        @if(isset($entrada->proveedor->nit))
+                        @if(isset($entrada->proveedor->ruc))
                         <tr>
-                            <th>NIT:</th>
-                            <td>{{ $entrada->proveedor->nit }}</td>
+                            <th>RUC/NIT:</th>
+                            <td>{{ $entrada->proveedor->ruc }}</td>
                         </tr>
                         @endif
                         @if(isset($entrada->proveedor->direccion))

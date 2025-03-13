@@ -7,6 +7,7 @@
     <h2 class="mb-4">Lista de Proveedores</h2>
     
     <a href="{{ route('proveedores.create') }}" class="btn btn-primary mb-3">Agregar Proveedor</a>
+    <a href="{{ route('proveedores.trashed') }}" class="btn btn-secondary mb-3">Proveedores eliminados</a>
 
     <table class="table table-striped">
         <thead class="table-dark">
